@@ -87,21 +87,30 @@ public class App {
         }
     }
 
-    private static void updaterProduits(long id, EntityManager em, BigDecimal newPrix) {
+    private static void UpdaterProduits(long id, EntityManager em, BigDecimal newPrix) {
+
         try {
             em.getTransaction().begin();
+
+
+
             Produit produit = em.find(Produit.class, id);
-            if (produit == null) {
-                throw new IllegalArgumentException("Produit introuvable : " + id);
-            }
             produit.setPrix(newPrix);
+
+
+            em.merge(produit);
+
+
+
             em.getTransaction().commit();
-            System.out.println("Prix du produit mis à jour !");
-        } catch (RuntimeException e) {
+            System.out.println("Produits a ete update !");
+        } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            throw e;
+            e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
     private static void DeleteProduits(long id, EntityManager em) {
